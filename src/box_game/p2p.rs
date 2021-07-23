@@ -3,8 +3,8 @@ use macroquad::prelude::*;
 use std::env;
 use std::net::SocketAddr;
 
-//use crate::box_game::*;
-use crate::box_game::*;
+use super::game_state::*;
+use super::render::*;
 
 //const FPS: u64 = 60;
 const FPS_INV: f32 = 1. / 60.;
