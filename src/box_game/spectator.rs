@@ -11,10 +11,15 @@ const INPUT_SIZE: usize = std::mem::size_of::<u8>();
 
 //type TagType = box_game::TagType;
 
-#[macroquad::main("Spectator Client")]
-async fn main() {
+pub async fn main() {
     // read cmd line arguments very clumsily
-    let args: Vec<String> = env::args().collect();
+    let mut args: Vec<String> = env::args().collect();
+    // Remove the first argument to
+    // not have the switch for whether
+    // we're a spectator or a p2p
+    // process.
+    args.remove(0);
+
     assert_eq!(args.len(), 3);
 
     let port: u16 = args[1].parse().unwrap();
