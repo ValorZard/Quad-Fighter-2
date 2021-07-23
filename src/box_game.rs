@@ -79,10 +79,10 @@ fn controls(mut velocity: Vec2, player: &Player, input: u8) -> Vec2 {
         velocity.set_y(-PLAYER_SPEED);
     }
     // stop moving if not pressing things
-    if input & INPUT_DOWN == 0 && input & INPUT_DOWN == 0{
+    if input & INPUT_DOWN == 0 && input & INPUT_UP == 0{
         velocity.set_y(0);
     }
-    
+
     // move left
     if input & INPUT_RIGHT != 0 {
         velocity.set_x(PLAYER_SPEED);

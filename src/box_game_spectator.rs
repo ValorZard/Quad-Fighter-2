@@ -14,7 +14,7 @@ mod box_game;
 type TagType = box_game::TagType;
 type Vec2 = resphys::Vec2;
 
-#[macroquad::main("Controllable box")]
+#[macroquad::main("Spectator Client")]
 async fn main() {
     // read cmd line arguments very clumsily
     let args: Vec<String> = env::args().collect();
