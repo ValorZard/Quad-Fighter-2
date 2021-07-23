@@ -1,0 +1,28 @@
+[package]
+name = "minigene-ggrs-macroquad-fighter"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ggrs = "0.2.5"
+serde = { version = "1.0.126", features = ["derive"] }
+bincode = "1.3"
+serial_test = "0.5"
+
+macroquad = "0.3.7"
+simple_logger = { version = "1.11.0"}
+
+[dependencies.resphys]
+git = "https://github.com/ValorZard/Resphys-Fixed"
+branch = "serde"
+
+# Examples
+[[example]]
+name = "box_game_p2p"
+path = "src/box_game_p2p.rs"
+
+[[example]]
+name = "box_game_spectator"
+path = "src/box_game_spectator.rs"
