@@ -3,7 +3,8 @@ use macroquad::prelude::*;
 use std::env;
 use std::net::SocketAddr;
 
-mod lib;
+//use crate::box_game::*;
+use crate::box_game::*;
 
 //const FPS: u64 = 60;
 const FPS_INV: f32 = 1. / 60.;
@@ -11,7 +12,7 @@ const NUM_PLAYERS: usize = 2;
 const INPUT_SIZE: usize = std::mem::size_of::<u8>();
 
 //type TagType = box_game::TagType;
-type Vec2 = resphys::Vec2;
+//type Vec2 = crate::Vec2;
 
 #[macroquad::main("Peer to Peer Connection")]
 async fn main() {
@@ -46,7 +47,7 @@ async fn main() {
     sess.start_session().unwrap();
 
     // Create a new box game
-    let mut game = box_game::BoxGame::new();
+    let mut game = BoxGame::new();
 
     // set render settings
 
@@ -89,13 +90,13 @@ async fn main() {
 
         debug_print(&game);
 
-        box_game_render::render(&game);
+        render(&game);
 
         next_frame().await
     }
 }
 
-fn debug_print(game: &box_game::BoxGame) {
+fn debug_print(game: &BoxGame) {
     let checksum_string = format!(
         "Frame {}: Checksum {}",
         game.last_checksum().0,

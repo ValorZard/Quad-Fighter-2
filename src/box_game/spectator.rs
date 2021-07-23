@@ -2,7 +2,7 @@ use ggrs::{GGRSError, GGRSEvent, SessionState};
 use macroquad::prelude::*;
 use std::env;
 use std::net::SocketAddr;
-use crate::{TagType};
+use crate::box_game::*;
 
 //const FPS: u64 = 60;
 const FPS_INV: f32 = 1. / 60.;
@@ -28,7 +28,7 @@ async fn main() {
     sess.start_session().unwrap();
 
     // Create a new box game
-    let mut game = box_game::BoxGame::new();
+    let mut game = BoxGame::new();
 
     let mut remaining_time = 0.;
     loop {
