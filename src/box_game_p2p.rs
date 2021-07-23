@@ -1,17 +1,16 @@
 use ggrs::{GGRSEvent, PlayerHandle, PlayerType, SessionState};
 use macroquad::prelude::*;
-use resphys::*;
 use std::env;
 use std::net::SocketAddr;
+
+mod lib;
 
 //const FPS: u64 = 60;
 const FPS_INV: f32 = 1. / 60.;
 const NUM_PLAYERS: usize = 2;
 const INPUT_SIZE: usize = std::mem::size_of::<u8>();
 
-mod box_game;
-
-type TagType = box_game::TagType;
+//type TagType = box_game::TagType;
 type Vec2 = resphys::Vec2;
 
 #[macroquad::main("Peer to Peer Connection")]
@@ -50,9 +49,6 @@ async fn main() {
     let mut game = box_game::BoxGame::new();
 
     // set render settings
-    let font = load_ttf_font("src/assets/FiraSans-Regular.ttf")
-        .await
-        .unwrap();
 
     // event loop
     let mut remaining_time = 0.;
@@ -66,7 +62,7 @@ async fn main() {
                 match sess.advance_frame(local_handle, &local_input) {
                     Ok(requests) => game.handle_requests(requests),
                     Err(ggrs::GGRSError::PredictionThreshold) => {
-                        println!("Skipping a frame: PredictionThreshold")
+                        //println!("Skipping a frame: PredictionThreshold")
                     }
                     Err(e) => panic!("{}", e),
                 }
@@ -91,77 +87,24 @@ async fn main() {
         game.key_states[2] = is_key_down(KeyCode::S);
         game.key_states[3] = is_key_down(KeyCode::D);
 
-        render(&game);
+        debug_print(&game);
+
+        box_game_render::render(&game);
 
         next_frame().await
     }
 }
 
-fn render(game: &box_game::BoxGame) {
-    clear_background(BLACK);
-
+fn debug_print(game: &box_game::BoxGame) {
     let checksum_string = format!(
         "Frame {}: Checksum {}",
         game.last_checksum().0,
         game.last_checksum().1
     );
-    let periodic_string = format!(
-        "Frame {}: Checksum {}",
-        game.periodic_checksum().0,
-        game.periodic_checksum().1
-    );
 
-    draw_text_ex(&checksum_string, 20.0, 20.0, TextParams::default());
-    draw_text_ex(&periodic_string, 20.0, 40.0, TextParams::default());
-
-    for (_, collider) in game.game_state().colliders.iter() {
-        let body = &game.game_state().bodies[collider.owner];
-        draw_collider(&collider, body.position);
-    }
-
-    // draw the player rectangles
-    /*
-    for i in 0..NUM_PLAYERS {
-        let (x, y) = game.game_state().positions[i];
-        let rotation = game.game_state().rotations[i];
-
-        draw_rectangle(
-            x,
-            y,
-            box_game::PLAYER_SIZE,
-            box_game::PLAYER_SIZE,
-            box_game::PLAYER_COLORS[i],
-        );
-    }
-    */
-}
-
-fn draw_collider(collider: &Collider<TagType>, position: Vec2) {
-    let mut color = match collider.state {
-        ColliderState::Solid => BLUE,
-        ColliderState::Sensor => YELLOW,
-    };
-    // Quickly change color's alpha
-    let fill_color = color;
-
-    color.a = 0.3;
-    // This works because there's currently only AABB shape. Half extents.
-    let wh = collider.shape.half_exts;
-    let x_pos = FP::to_num::<f32>(position.x() - wh.x() + collider.offset.x());
-    let y_pos = FP::to_num::<f32>(position.y() - wh.y() + collider.offset.y());
-    draw_rectangle(
-        x_pos,
-        y_pos,
-        FP::to_num::<f32>(wh.x()) * 2.,
-        FP::to_num::<f32>(wh.y()) * 2.,
-        color,
-    );
-    draw_rectangle_lines(
-        x_pos,
-        y_pos,
-        FP::to_num::<f32>(wh.x()) * 2.,
-        FP::to_num::<f32>(wh.y()) * 2.,
-        3.,
-        fill_color,
+    println!("{}", checksum_string);
+    println!(
+        "Up: {0}, Down: {1}, Left: {2}, Right: {3}",
+        game.key_states[0], game.key_states[1], game.key_states[2], game.key_states[3]
     );
 }

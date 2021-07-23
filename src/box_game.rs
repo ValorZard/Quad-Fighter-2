@@ -2,6 +2,7 @@ use ggrs::{Frame, GGRSRequest, GameInput, GameState, GameStateCell, NULL_FRAME};
 use macroquad::prelude::*;
 use resphys::*;
 use serde::{Deserialize, Serialize};
+use crate::{TagType, Vec2};
 
 //const FPS: u64 = 60;
 const FPS_INV: f32 = 1. / 60.;
@@ -10,15 +11,7 @@ const NUM_PLAYERS: usize = 2;
 const CHECKSUM_PERIOD: i32 = 100;
 const PLAYER_SPEED: i32 = 10;
 
-type Vec2 = resphys::Vec2;
-
-#[derive(Serialize, Deserialize, Clone, Copy, Debug)]
-pub enum TagType {
-    Tile,
-    Player,
-}
-
-pub const PLAYER_COLORS: [Color; 2] = [BLUE, ORANGE];
+// pub const PLAYER_COLORS: [Color; 2] = [BLUE, ORANGE];
 
 const WINDOW_HEIGHT: u32 = 800;
 const WINDOW_WIDTH: u32 = 600;
@@ -72,14 +65,14 @@ fn check_grounded(physics: &mut PhysicsWorld<TagType>, player: &mut Player) -> b
 
 fn controls(mut velocity: Vec2, player: &Player, input: u8) -> Vec2 {
     if input & INPUT_DOWN != 0 {
-        velocity.set_y(PLAYER_SPEED); 
+        velocity.set_y(PLAYER_SPEED);
     }
     // jump
     if input & INPUT_UP != 0 {
         velocity.set_y(-PLAYER_SPEED);
     }
     // stop moving if not pressing things
-    if input & INPUT_DOWN == 0 && input & INPUT_UP == 0{
+    if input & INPUT_DOWN == 0 && input & INPUT_UP == 0 {
         velocity.set_y(0);
     }
 
@@ -92,7 +85,7 @@ fn controls(mut velocity: Vec2, player: &Player, input: u8) -> Vec2 {
         velocity.set_x(-PLAYER_SPEED);
     }
     // stop moving if not pressing things
-    if input & INPUT_LEFT == 0 && input & INPUT_RIGHT == 0{
+    if input & INPUT_LEFT == 0 && input & INPUT_RIGHT == 0 {
         velocity.set_x(0);
     }
 
@@ -310,15 +303,15 @@ impl BoxGameState {
         }
     }
 
-    pub fn physics_mut(&mut self) -> &mut PhysicsWorld<TagType>{
+    pub fn physics_mut(&mut self) -> &mut PhysicsWorld<TagType> {
         &mut self.physics
     }
 
-    pub fn bodies_mut(&mut self) -> &mut BodySet{
+    pub fn bodies_mut(&mut self) -> &mut BodySet {
         &mut self.bodies
     }
 
-    pub fn colliders_mut(&mut self) -> &mut ColliderSet<TagType>{
+    pub fn colliders_mut(&mut self) -> &mut ColliderSet<TagType> {
         &mut self.colliders
     }
 }
@@ -329,36 +322,16 @@ fn world_generation(
     colliders: &mut ColliderSet<TagType>,
 ) {
     for x in (0..=768).step_by(32) {
-        add_tile(
-            physics,
-            bodies,
-            colliders,
-            Vec2::from(16 + x, 16),
-        );
+        add_tile(physics, bodies, colliders, Vec2::from(16 + x, 16));
     }
     for y in (32..=544).step_by(32) {
-        add_tile(
-            physics,
-            bodies,
-            colliders,
-            Vec2::from(16, 16 + y),
-        );
+        add_tile(physics, bodies, colliders, Vec2::from(16, 16 + y));
     }
     for y in (32..=544).step_by(32) {
-        add_tile(
-            physics,
-            bodies,
-            colliders,
-            Vec2::from(768 + 16, 16 + y),
-        );
+        add_tile(physics, bodies, colliders, Vec2::from(768 + 16, 16 + y));
     }
     for x in (32..=768 - 32).step_by(32) {
-        add_tile(
-            physics,
-            bodies,
-            colliders,
-            Vec2::from(16 + x, 544 + 16),
-        );
+        add_tile(physics, bodies, colliders, Vec2::from(16 + x, 544 + 16));
     }
 }
 
