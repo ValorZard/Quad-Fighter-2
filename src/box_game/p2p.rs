@@ -14,10 +14,15 @@ const INPUT_SIZE: usize = std::mem::size_of::<u8>();
 //type TagType = box_game::TagType;
 //type Vec2 = crate::Vec2;
 
-#[macroquad::main("Peer to Peer Connection")]
-async fn main() {
+pub async fn main() {
     // read cmd line arguments very clumsily
-    let args: Vec<String> = env::args().collect();
+    let mut args: Vec<String> = env::args().collect();
+    // Remove the first argument to
+    // not have the switch for whether
+    // we're a spectator or a p2p
+    // process.
+    args.remove(0);
+
     assert!(args.len() >= 4);
 
     let port: u16 = args[1].parse().unwrap();
