@@ -40,6 +40,10 @@ pub async fn main() {
     // game loop
     loop {
         remaining_time += get_frame_time();
+
+        // get newest info from remotes
+        sess.poll_remote_clients();
+
         while remaining_time >= FPS_INV {
             if sess.current_state() == SessionState::Running {
                 // tell GGRS it is time to advance the frame and handle the requests
@@ -52,19 +56,16 @@ pub async fn main() {
                 }
             }
 
-            // handle GGRS events
-            for event in sess.events() {
-                println!("Event: {:?}", event);
-                if let GGRSEvent::Disconnected { .. } = event {
-                    panic!("Disconnected from host.");
-                }
-            }
-
             remaining_time -= FPS_INV;
         }
 
-        // idle
-        sess.poll_remote_clients();
+        // handle GGRS events
+        for event in sess.events() {
+            println!("Event: {:?}", event);
+            if let GGRSEvent::Disconnected { .. } = event {
+                panic!("Disconnected from host.");
+            }
+        }
 
         render(&game);
 

@@ -60,6 +60,10 @@ pub async fn main() {
     let mut remaining_time = 0.;
     loop {
         remaining_time += get_frame_time();
+
+        // get newest info from remotes
+        sess.poll_remote_clients();
+
         while remaining_time >= FPS_INV {
             if sess.current_state() == SessionState::Running {
                 // tell GGRS it is time to advance the frame and handle the requests
@@ -74,18 +78,16 @@ pub async fn main() {
                 }
             }
 
-            // handle GGRS events
-            for event in sess.events() {
-                if let GGRSEvent::WaitRecommendation { skip_frames } = event {
-                    // frames_to_skip += skip_frames
-                }
-                println!("Event: {:?}", event);
-            }
             remaining_time -= FPS_INV;
         }
 
-        // idle
-        sess.poll_remote_clients();
+        // handle GGRS events
+        for event in sess.events() {
+            if let GGRSEvent::WaitRecommendation { skip_frames } = event {
+                // frames_to_skip += skip_frames
+            }
+            println!("Event: {:?}", event);
+        }
 
         // update key state
         game.key_states[0] = is_key_down(KeyCode::W);
