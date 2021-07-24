@@ -27,3 +27,13 @@ As mentioned before, this project uses a combination of technologies.
 - The easiest way to contact me is on Discord. I'm the GGPO discord, the Rust Gamedev discord, the macroquad discord, the Bevy discord, and the FGC Devs discord under the name of ValorZard.
 - Else, just post a github issue and I'll try to come back to it.
 
+## License
+
+This project is free and open source! All code in this repository is dual-licensed under either:
+
+- MIT License ([LICENSE-MIT](https://github.com/ValorZard/Quad-Fighter-2/blob/master/LICENSE-MIT) or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0 ([LICENSE-APACHE](https://github.com/ValorZard/Quad-Fighter-2/blob/master/LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+
+at your option. This means you can select the license you prefer!  This dual-licensing approach is the de-facto standard in the Rust  ecosystem and there are [very good reasons](https://github.com/bevyengine/bevy/issues/2373) to include both.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
