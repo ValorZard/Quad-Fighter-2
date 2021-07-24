@@ -11,6 +11,7 @@ const FPS_INV: f32 = 1. / 60.;
 const NUM_PLAYERS: usize = 2;
 const CHECKSUM_PERIOD: i32 = 100;
 const PLAYER_SPEED: i32 = 10;
+const JUMP_FORCE: i32 = 128;
 
 // pub const PLAYER_COLORS: [Color; 2] = [BLUE, ORANGE];
 
@@ -66,28 +67,31 @@ fn check_grounded(physics: &mut PhysicsWorld<TagType>, player: &mut Player) -> b
 
 fn controls(mut velocity: Vec2, player: &Player, input: u8) -> Vec2 {
     if input & INPUT_DOWN != 0 {
-        velocity.set_y(PLAYER_SPEED);
+        //velocity = velocity + Vec2::from(0, PLAYER_SPEED);
     }
     // jump
     if input & INPUT_UP != 0 {
-        velocity.set_y(-PLAYER_SPEED);
+        velocity.set_y(-JUMP_FORCE);
+        //velocity.set_y(-PLAYER_SPEED);
     }
     // stop moving if not pressing things
     if input & INPUT_DOWN == 0 && input & INPUT_UP == 0 {
-        velocity.set_y(0);
+        //velocity.set_y(0);
     }
 
     // move left
     if input & INPUT_RIGHT != 0 {
-        velocity.set_x(PLAYER_SPEED);
+        velocity = velocity + Vec2::from(PLAYER_SPEED, 0);
+        //velocity.set_x(PLAYER_SPEED);
     }
     // move right
     if input & INPUT_LEFT != 0 {
-        velocity.set_x(-PLAYER_SPEED);
+        velocity = velocity + Vec2::from(-PLAYER_SPEED, 0);
+        //velocity.set_x(-PLAYER_SPEED);
     }
     // stop moving if not pressing things
     if input & INPUT_LEFT == 0 && input & INPUT_RIGHT == 0 {
-        velocity.set_x(0);
+        //velocity.set_x(0);
     }
 
     //*velocity.x_mut() = velocity.x().max(FP::from_num(-128)).min(FP::from_num(128));
@@ -110,16 +114,17 @@ fn physics_update(
     player.is_grounded = check_grounded(physics, player);
     // set movement
 
-    /*
-    let gravity = Vec2::from(0, -5);
+    
+    let gravity = Vec2::from(0, 5);
 
     // gravity only happens when not grounded
     if !player.is_grounded {
         player_body.velocity = player_body.velocity + gravity;
+        //println!("Falling");
     } else {
         player_body.velocity.set_y(0);
     }
-    */
+    
 
     player_body.velocity = controls(player_body.velocity, player, input);
 
@@ -200,7 +205,8 @@ impl BoxGame {
             let input;
             // check if the player is disconnected (disconnected players might maybe do something different)
             if inputs[i].frame == NULL_FRAME {
-                input = 4; // disconnected players spin
+                // TODO: figure out what to do when a player is disconnected
+                input = 0;
             } else {
                 input = bincode::deserialize(inputs[i].input()).unwrap();
             }
@@ -213,7 +219,7 @@ impl BoxGame {
                 input,
             );
 
-            self.log += &format!("{:#?}\n", self.game_state);
+            //self.log += &format!("{:#?}\n", self.game_state.physics.collision_graph.binding);
         }
 
         // TODO: inefficient to serialize the gamestate here just for the checksum
@@ -329,6 +335,70 @@ fn world_generation(
     physics: &mut PhysicsWorld<TagType>,
     bodies: &mut BodySet,
     colliders: &mut ColliderSet<TagType>,
+)
+{
+    let position = Vec2::from(16, 425);
+    let left_body = resphys::builder::BodyDesc::new()
+        .with_position(position)
+        .make_static()
+        .build();
+    let left_collider = resphys::builder::ColliderDesc::new(
+        AABB {
+            half_exts: Vec2::from(16., 750.),
+        },
+        TagType::Tile,
+    );
+    let left_body_handle = bodies.insert(left_body);
+    colliders.insert(left_collider.build(left_body_handle), bodies, physics);
+
+    let position = Vec2::from(775, 425);
+    let right_body = resphys::builder::BodyDesc::new()
+        .with_position(position)
+        .make_static()
+        .build();
+    let right_collider = resphys::builder::ColliderDesc::new(
+        AABB {
+            half_exts: Vec2::from(16., 750.),
+        },
+        TagType::Tile,
+    );
+    let right_body_handle = bodies.insert(right_body);
+    colliders.insert(right_collider.build(right_body_handle), bodies, physics);
+
+    let position = Vec2::from(400, 16);
+    let up_body = resphys::builder::BodyDesc::new()
+        .with_position(position)
+        .make_static()
+        .build();
+    let up_collider = resphys::builder::ColliderDesc::new(
+        AABB {
+            half_exts: Vec2::from(800., 16.),
+        },
+        TagType::Tile,
+    );
+    let up_body_handle = bodies.insert(up_body);
+    colliders.insert(up_collider.build(up_body_handle), bodies, physics);
+
+    let position = Vec2::from(400, 580);
+    let down_body = resphys::builder::BodyDesc::new()
+        .with_position(position)
+        .make_static()
+        .build();
+    let down_collider = resphys::builder::ColliderDesc::new(
+        AABB {
+            half_exts: Vec2::from(800., 16.),
+        },
+        TagType::Tile,
+    );
+    let down_body_handle = bodies.insert(down_body);
+    colliders.insert(down_collider.build(down_body_handle), bodies, physics);
+}
+
+/* 
+fn world_generation(
+    physics: &mut PhysicsWorld<TagType>,
+    bodies: &mut BodySet,
+    colliders: &mut ColliderSet<TagType>,
 ) {
     for x in (0..=768).step_by(32) {
         add_tile(physics, bodies, colliders, Vec2::from(16 + x, 16));
@@ -363,3 +433,4 @@ fn add_tile(
     let body3_handle = bodies.insert(body3);
     colliders.insert(collider3.build(body3_handle), bodies, physics);
 }
+*/

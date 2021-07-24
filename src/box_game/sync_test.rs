@@ -62,7 +62,7 @@ pub async fn main() {
         game.key_states[2] = is_key_down(KeyCode::S);
         game.key_states[3] = is_key_down(KeyCode::D);
 
-        debug_print(&game);
+        //debug_print(&game);
 
         render(&game);
 
