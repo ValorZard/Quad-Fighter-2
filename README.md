@@ -4,6 +4,8 @@ Quad Fighter 2, a "sequel" to the extremely incomplete Quad Fighter, is a 2D fig
 
 ***<u>PULL REQUESTS AND ISSUES WELCOME!</u>***
 
+To launch this project, simply just run start.bat.
+
 ## Game Goals
 
 For now, here are the main goals for this game. 
