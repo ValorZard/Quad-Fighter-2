@@ -17,12 +17,3 @@ simple_logger = { version = "1.11.0"}
 [dependencies.resphys]
 git = "https://github.com/ValorZard/Resphys-Fixed"
 branch = "serde"
-
-# Examples
-[[example]]
-name = "box_game_p2p"
-path = "src/box_game/p2p.rs"
-
-[[example]]
-name = "box_game_spectator"
-path = "src/box_game/spectator.rs"

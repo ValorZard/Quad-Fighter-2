@@ -1,8 +1,9 @@
+use crate::{TagType, Vec2};
 use ggrs::{Frame, GGRSRequest, GameInput, GameState, GameStateCell, NULL_FRAME};
 use macroquad::prelude::*;
 use resphys::*;
 use serde::{Deserialize, Serialize};
-use crate::{TagType, Vec2};
+use std::stringify;
 
 //const FPS: u64 = 60;
 const FPS_INV: f32 = 1. / 60.;
@@ -136,6 +137,7 @@ pub struct BoxGame {
     //font: PathBuf,
     last_checksum: (Frame, u64),
     periodic_checksum: (Frame, u64),
+    log: String,
 }
 
 impl BoxGame {
@@ -146,6 +148,7 @@ impl BoxGame {
             //font,
             last_checksum: (NULL_FRAME, 0),
             periodic_checksum: (NULL_FRAME, 0),
+            log: String::new(),
         }
     }
 
@@ -159,6 +162,10 @@ impl BoxGame {
 
     pub fn periodic_checksum(&self) -> (i32, u64) {
         self.periodic_checksum
+    }
+
+    pub fn log(&self) -> &String {
+        &self.log
     }
 
     pub fn handle_requests(&mut self, requests: Vec<GGRSRequest>) {
@@ -205,6 +212,8 @@ impl BoxGame {
                 &mut self.game_state.players[i],
                 input,
             );
+
+            self.log += &format!("{:#?}\n", self.game_state);
         }
 
         // TODO: inefficient to serialize the gamestate here just for the checksum

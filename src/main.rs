@@ -1,6 +1,6 @@
+use macroquad::window::Conf;
 use resphys::*;
 use serde::{Deserialize, Serialize};
-use macroquad::window::Conf;
 
 pub mod box_game;
 
@@ -17,6 +17,7 @@ fn window_conf() -> Conf {
     let name = match &kind[..] {
         "p2p" => "Peer to Peer Connection",
         "spectator" => "Spectator Client",
+        "sync_test" => "Sync Test",
         _ => panic!("Unexpected argument: {}", kind),
     };
 
@@ -31,6 +32,7 @@ async fn main() {
     match &kind[..] {
         "p2p" => crate::box_game::p2p::main().await,
         "spectator" => crate::box_game::spectator::main().await,
+        "sync_test" => crate::box_game::sync_test::main().await,
         _ => panic!("Unexpected argument: {}", kind),
     }
 }

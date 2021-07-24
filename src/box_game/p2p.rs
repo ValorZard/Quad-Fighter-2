@@ -56,7 +56,7 @@ pub async fn main() {
 
     // set render settings
 
-    // event loop
+    // game loop
     let mut remaining_time = 0.;
     loop {
         remaining_time += get_frame_time();

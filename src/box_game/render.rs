@@ -1,6 +1,6 @@
+use crate::{box_game, TagType, Vec2};
 use macroquad::prelude::*;
 use resphys::*;
-use crate::{box_game, Vec2, TagType};
 
 pub fn render(game: &box_game::BoxGame) {
     clear_background(BLACK);

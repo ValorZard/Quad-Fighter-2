@@ -1,8 +1,8 @@
+use crate::box_game::*;
 use ggrs::{GGRSError, GGRSEvent, SessionState};
 use macroquad::prelude::*;
 use std::env;
 use std::net::SocketAddr;
-use crate::box_game::*;
 
 //const FPS: u64 = 60;
 const FPS_INV: f32 = 1. / 60.;
@@ -36,6 +36,8 @@ pub async fn main() {
     let mut game = BoxGame::new();
 
     let mut remaining_time = 0.;
+
+    // game loop
     loop {
         remaining_time += get_frame_time();
         while remaining_time >= FPS_INV {
@@ -54,7 +56,7 @@ pub async fn main() {
             for event in sess.events() {
                 println!("Event: {:?}", event);
                 if let GGRSEvent::Disconnected { .. } = event {
-                    println!("Disconnected from host.");
+                    panic!("Disconnected from host.");
                 }
             }
 
