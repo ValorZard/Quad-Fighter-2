@@ -14,6 +14,7 @@ For now, here are the main goals for this game.
 - Despite the obvious reference to Street Fighter in the title, I'm actually much more influenced by anime fighters like Guilty Gear and Blazblue. As such, there will be a cancel system that lets you change moves from light - medium - heavy, with the ability to mix and match so you can go from light to heavy or medium to heavy for instance.
 - There will also be Roman/Rapid cancels, as based on Guilty Gear Strive's RC system.
 - This will be a super stripped down game. There will only be two characters at the start, and one of them is going to be [Kung Fu Man from MUGEN/IKEMEN](https://github.com/ikemen-engine/Ikemen_GO-Elecbyte-Screenpack) (whose sprites are licensed under creative commons.) The second character will probably be some character that's a mix of Ky Kiske/Melee Marth (swordie shoto with large grab range).
+- For more information about the game design, [check this document.](https://github.com/ValorZard/Quad-Fighter-2/blob/master/GAME-DESIGN.md)
 
 ## Tech Stack
 
