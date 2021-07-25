@@ -15,6 +15,9 @@ const JUMP_FORCE: i32 = 128;
 
 // pub const PLAYER_COLORS: [Color; 2] = [BLUE, ORANGE];
 
+const MAX_PLAYER_SPEED: i16 = 64;
+const MAX_AIR_JUMPS: u8 = 3;
+
 const WINDOW_HEIGHT: u32 = 800;
 const WINDOW_WIDTH: u32 = 600;
 
@@ -42,7 +45,10 @@ pub struct Player {
     body_handle: BodyHandle,
     collider_handle: ColliderHandle,
     // game state
-    is_grounded: bool,
+    pub is_grounded: bool,
+    pub can_ground_jump: bool,
+    pub air_jumps_left: u8,
+    pub is_jumping: bool,
 }
 
 fn check_grounded(physics: &mut PhysicsWorld<TagType>, player: &mut Player) -> bool {
@@ -65,14 +71,22 @@ fn check_grounded(physics: &mut PhysicsWorld<TagType>, player: &mut Player) -> b
     }
 }
 
-fn controls(mut velocity: Vec2, player: &Player, input: u8) -> Vec2 {
+fn handle_player_movement(mut velocity: Vec2, player: &mut Player, input: u8) -> Vec2 {
     if input & INPUT_DOWN != 0 {
         //velocity = velocity + Vec2::from(0, PLAYER_SPEED);
     }
     // jump
     if input & INPUT_UP != 0 {
-        velocity.set_y(-JUMP_FORCE);
-        //velocity.set_y(-PLAYER_SPEED);
+        if !player.is_jumping {
+            if player.is_grounded {
+                velocity.set_y(-JUMP_FORCE);
+                player.is_jumping = true;
+            } else if !player.is_grounded && player.air_jumps_left > 0 {
+                player.air_jumps_left -= 1;
+                velocity.set_y(-JUMP_FORCE);
+                player.is_jumping = true;
+            }
+        }
     }
     // stop moving if not pressing things
     if input & INPUT_DOWN == 0 && input & INPUT_UP == 0 {
@@ -94,7 +108,10 @@ fn controls(mut velocity: Vec2, player: &Player, input: u8) -> Vec2 {
         //velocity.set_x(0);
     }
 
-    //*velocity.x_mut() = velocity.x().max(FP::from_num(-128)).min(FP::from_num(128));
+    *velocity.x_mut() = velocity
+        .x()
+        .max(FP::from_num(-MAX_PLAYER_SPEED))
+        .min(FP::from_num(MAX_PLAYER_SPEED));
 
     velocity
 }
@@ -114,19 +131,23 @@ fn physics_update(
     player.is_grounded = check_grounded(physics, player);
     // set movement
 
-    
     let gravity = Vec2::from(0, 5);
 
     // gravity only happens when not grounded
     if !player.is_grounded {
         player_body.velocity = player_body.velocity + gravity;
         //println!("Falling");
+        player.can_ground_jump = false;
     } else {
         player_body.velocity.set_y(0);
+        player.can_ground_jump = true;
+        player.air_jumps_left = MAX_AIR_JUMPS;
     }
-    
 
-    player_body.velocity = controls(player_body.velocity, player, input);
+    // reset to is not jumping if player is jumping
+    player.is_jumping = false;
+
+    player_body.velocity = handle_player_movement(player_body.velocity, player, input);
 
     //println!("{}", player_body.velocity);
     //println!("{}", player.is_grounded);
@@ -304,6 +325,9 @@ impl BoxGameState {
                 body_handle: player_bhandle,
                 collider_handle: _player_chandle,
                 is_grounded: false,
+                can_ground_jump: false,
+                air_jumps_left: MAX_AIR_JUMPS,
+                is_jumping: false,
             };
 
             players.push(player);
@@ -335,8 +359,7 @@ fn world_generation(
     physics: &mut PhysicsWorld<TagType>,
     bodies: &mut BodySet,
     colliders: &mut ColliderSet<TagType>,
-)
-{
+) {
     let position = Vec2::from(16, 425);
     let left_body = resphys::builder::BodyDesc::new()
         .with_position(position)
@@ -394,7 +417,7 @@ fn world_generation(
     colliders.insert(down_collider.build(down_body_handle), bodies, physics);
 }
 
-/* 
+/*
 fn world_generation(
     physics: &mut PhysicsWorld<TagType>,
     bodies: &mut BodySet,

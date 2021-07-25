@@ -42,7 +42,7 @@ pub async fn main() {
 
             match sess.advance_frame(local_player, &local_input) {
                 Ok(requests) => game.handle_requests(requests),
-                Err(ggrs::GGRSError::MismatchedChecksum{frame}) => {
+                Err(ggrs::GGRSError::MismatchedChecksum { frame }) => {
                     print_to_file(game.log());
                     panic!("Desynced at frame {}: MismatchedChecksum", frame);
                 }
@@ -70,22 +70,7 @@ pub async fn main() {
     }
 }
 
-fn debug_print(game: &BoxGame) {
-    let checksum_string = format!(
-        "Frame {}: Checksum {}",
-        game.last_checksum().0,
-        game.last_checksum().1
-    );
-
-    println!("{}", checksum_string);
-    println!(
-        "Up: {0}, Down: {1}, Left: {2}, Right: {3}",
-        game.key_states[0], game.key_states[1], game.key_states[2], game.key_states[3]
-    );
-}
-
-fn print_to_file(my_string: &String)
-{
+fn print_to_file(my_string: &String) {
     let path = Path::new("lorem_ipsum.txt");
     let display = path.display();
 

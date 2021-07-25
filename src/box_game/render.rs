@@ -21,6 +21,40 @@ pub fn render(game: &box_game::BoxGame) {
     draw_text_ex(&checksum_string, 20.0, 20.0, TextParams::default());
     draw_text_ex(&periodic_string, 20.0, 40.0, TextParams::default());
 
+    let mut print_buffer: f32 = 80.0;
+    let mut player_id: u8 = 0;
+
+    // print gamestate data
+    for player in game.game_state().players.iter() {
+        draw_text_ex(
+            &format!("Player ID: {}", player_id),
+            20.0,
+            print_buffer + 20.0,
+            TextParams::default(),
+        );
+        draw_text_ex(
+            &format!("Is Grounded: {}", player.is_grounded),
+            20.0,
+            print_buffer + 40.0,
+            TextParams::default(),
+        );
+        draw_text_ex(
+            &format!("Can Ground Jump: {}", player.can_ground_jump),
+            20.0,
+            print_buffer + 60.0,
+            TextParams::default(),
+        );
+        draw_text_ex(
+            &format!("Air Jumps Left: {}", player.air_jumps_left),
+            20.0,
+            print_buffer + 80.0,
+            TextParams::default(),
+        );
+
+        player_id += 1;
+        print_buffer += print_buffer;
+    }
+
     for (_, collider) in game.game_state().colliders.iter() {
         let body = &game.game_state().bodies[collider.owner];
         draw_collider(&collider, body.position);

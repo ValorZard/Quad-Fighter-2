@@ -102,17 +102,3 @@ pub async fn main() {
         next_frame().await
     }
 }
-
-fn debug_print(game: &BoxGame) {
-    let checksum_string = format!(
-        "Frame {}: Checksum {}",
-        game.last_checksum().0,
-        game.last_checksum().1
-    );
-
-    println!("{}", checksum_string);
-    println!(
-        "Up: {0}, Down: {1}, Left: {2}, Right: {3}",
-        game.key_states[0], game.key_states[1], game.key_states[2], game.key_states[3]
-    );
-}
